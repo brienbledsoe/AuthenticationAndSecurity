@@ -1,4 +1,7 @@
 //jshint esversion:6
+require('dotenv').config(); //Important that you put this line right at the top of the file because
+//otherwise if you try to use an enviornment variable and its not configured then you won't be able
+//to access it
 const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
@@ -7,6 +10,8 @@ const encrypt = require("mongoose-encryption");
 const {Schema} = mongoose;
 
 const app = express();
+
+// console.log(process.env.log.SECRET);
 
 app.set('view engine', 'ejs');
 
@@ -25,9 +30,10 @@ const userSchema = new Schema ({
     password: String
 })
 
-const secret = "Thisisourlittlesecret"
 
-userSchema.plugin(encrypt, {secret: secret, encryptedFields : ['password']}); //important that we add this plugin to the schema before we
+console.log("secret key: ", process.env.SECRET)
+
+userSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields : ['password']}); //important that we add this plugin to the schema before we
 //create our mongoose model. This plugin will encrypt the entire database
 //the secret key is what we're using to encrypt our password (the convenient way from documentation)
 // You may or may not want this to happen to you database, because later on when the user logs
